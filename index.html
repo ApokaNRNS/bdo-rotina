@@ -2390,14 +2390,13 @@ function renderEventosSA() {
   const monthsEl = document.getElementById('timeline-months');
   if(!timeline) return;
 
-  // Se a lista estiver vazia por algum motivo, limpa e para.
   if(!eventosSAItems || eventosSAItems.length === 0) {
     timeline.innerHTML = '<div style="padding:20px;color:#888;">Nenhum evento para exibir na linha do tempo.</div>';
     if(monthsEl) monthsEl.innerHTML = '';
     return;
   }
 
-  // Define uma base de tempo segura para o calendário não bugar
+  // Pega a data de hoje para a linha do tempo bater certinho
   const today = new Date();
   today.setHours(0,0,0,0);
   
@@ -2436,7 +2435,6 @@ function renderEventosSA() {
   nowLine.style.left = (daysFromStart * 60 + 30) + 'px';
   timeline.appendChild(nowLine);
 
-  timeline.querySelectorAll('.timeline-event-bar').forEach(el => el.remove());
   let eventCount = 0;
 
   const sortedEvents = [...eventosSAItems].filter(e => e.status !== 'encerrado').sort((a, b) => {
@@ -2471,7 +2469,6 @@ function renderEventosSA() {
       
       if (end < startDate) return;
       
-      // Força a barra a ter tamanho suficiente para o texto aparecer
       durationDays = Math.max(1, endIdx - startIdx + 1);
     }
 
@@ -2490,8 +2487,7 @@ function renderEventosSA() {
     
     bar.style.left = (startIdx * 60) + 'px'; 
     bar.style.top = top + 'px';
-    // Largura mínima de 200px garante o título visível
-    bar.style.width = Math.max(200, (durationDays * 60 - 4)) + 'px'; 
+    bar.style.width = Math.max(200, (durationDays * 60 - 4)) + 'px'; // Trava de segurança para não encolher
     bar.style.position = 'absolute';
     
     if (!statusClass) {
@@ -2518,6 +2514,35 @@ function renderEventosSA() {
   if (scrollContainer) {
     scrollContainer.style.height = alturaFinal + 'px';
     scrollContainer.style.maxHeight = 'none';
+  }
+}
+
+async function carregarEventosSA(force=false) {
+  const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
+  if(label)label.textContent='Atualizando lista…';
+  try {
+    const response=await fetch(`data/eventos-sa.json${force?'?atualizar='+Date.now():''}`,{cache:force?'no-store':'default'});
+    if(!response.ok)throw new Error('Feed ainda não publicado');
+    const data=await response.json(); eventosSAItems=Array.isArray(data.events)?data.events:[];
+    if(label){const date=data.updatedAt?new Date(data.updatedAt):null;label.textContent=date&&!isNaN(date)?`Atualizado ${date.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`:'Lista oficial';}
+    if(status)status.textContent=`${eventosSAItems.filter(x=>x.status==='andamento').length} em andamento · ${eventosSAItems.filter(x=>x.status==='encerrado').length} encerrados`;
+    renderEventosSA();
+  } catch (_) {
+    const fallback=document.getElementById('eventos-sa-fallback');
+    if(fallback){
+      try{
+        const snapshot=JSON.parse(fallback.textContent); eventosSAItems=Array.isArray(snapshot.events)?snapshot.events:[];
+        // AQUI ESTÁ O SEGREDO: Força a data do snapshot a ser a data atual (agora)
+        if(label){ 
+           label.textContent = `Snapshot ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`; 
+        }
+        if(status)status.textContent='Arquivo local: mostrando a última cópia incluída. Abra o site publicado para receber atualizações automáticas.';
+        renderEventosSA(); return;
+      }catch(__){}
+    }
+    if(label)label.textContent='Não foi possível atualizar';
+    if(status)status.innerHTML='A atualização funciona no site publicado. Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
+    renderEventosSA();
   }
 }
 async function carregarEventosSA(force=false) {
