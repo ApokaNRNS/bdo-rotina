@@ -2472,7 +2472,7 @@ async function carregarEventosSA(force=false) {
   const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
   if(label)label.textContent='Atualizando lista…';
   try {
-    const response=await fetch(`data/eventos-sa.json${force?'?atualizar='+Date.now():''}`,{cache:force?'no-store':'default'});
+    const response = await fetch(`https://raw.githubusercontent.com/ApokaNRNS/bdo-rotina/refs/heads/main/data/eventos-sa.json${force?'?atualizar='+Date.now():''}`,{cache:force?'no-store':'default'});
     if(!response.ok)throw new Error('Feed ainda não publicado');
     const data=await response.json(); eventosSAItems=Array.isArray(data.events)?data.events:[];
     if(label){const date=data.updatedAt?new Date(data.updatedAt):null;label.textContent=date&&!isNaN(date)?`Atualizado ${date.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`:'Lista oficial';}
