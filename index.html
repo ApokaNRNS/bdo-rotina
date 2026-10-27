@@ -2347,19 +2347,16 @@ function renderEventosSA() {
       return matchFilter && (!eventosSASearch || String(item.title || '').toLocaleLowerCase('pt-BR').includes(eventosSASearch));
     });
 
-    // ORDENAÇÃO DOS CARDS: Novos -> Em andamento -> Permanentes -> Encerrados
     filtered.sort((a, b) => {
       const getWeight = (item) => {
         if (item.status === 'encerrado') return 4;
         if (item.permanent) return 3;
         const isNew = Number(item.daysRemaining) >= 9 && String(item.title || '').includes('2026');
         if (isNew) return 1;
-        return 2; // Em andamento
+        return 2;
       };
       const weightDiff = getWeight(a) - getWeight(b);
       if (weightDiff !== 0) return weightDiff;
-      
-      // Se for do mesmo tipo, ordena pelos dias restantes (quem expira primeiro)
       const daysA = a.permanent ? 999 : Number(a.daysRemaining);
       const daysB = b.permanent ? 999 : Number(b.daysRemaining);
       if (daysA !== daysB) return daysA - daysB;
@@ -2388,11 +2385,19 @@ function renderEventosSA() {
     }
   }
 
-    // 2. Renderizar a Timeline
+  // 2. Renderizar a Timeline
   const timeline = document.getElementById('events-timeline-grid');
   const monthsEl = document.getElementById('timeline-months');
-  if(!timeline || !eventosSAItems.length) return;
+  if(!timeline) return;
 
+  // Se a lista estiver vazia por algum motivo, limpa e para.
+  if(!eventosSAItems || eventosSAItems.length === 0) {
+    timeline.innerHTML = '<div style="padding:20px;color:#888;">Nenhum evento para exibir na linha do tempo.</div>';
+    if(monthsEl) monthsEl.innerHTML = '';
+    return;
+  }
+
+  // Define uma base de tempo segura para o calendário não bugar
   const today = new Date();
   today.setHours(0,0,0,0);
   
@@ -2438,7 +2443,6 @@ function renderEventosSA() {
     if (a.permanent && !b.permanent) return 1;
     if (!a.permanent && b.permanent) return -1;
     if (a.permanent && b.permanent) return String(a.title).localeCompare(String(b.title));
-
     const daysA = Number(a.daysRemaining);
     const daysB = Number(b.daysRemaining);
     if (daysA !== daysB) return daysA - daysB;
@@ -2453,7 +2457,6 @@ function renderEventosSA() {
       startIdx = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
       durationDays = Math.min(20, 30 - startIdx);
     } else {
-      // Correção para não bugar a barra se daysRemaining for nulo ou inválido
       let dR = Number(ev.daysRemaining);
       if (isNaN(dR) || dR < 0) dR = 1; 
 
@@ -2468,7 +2471,7 @@ function renderEventosSA() {
       
       if (end < startDate) return;
       
-      // Garante que a barra tenha pelo menos 1 dia de largura para o texto aparecer
+      // Força a barra a ter tamanho suficiente para o texto aparecer
       durationDays = Math.max(1, endIdx - startIdx + 1);
     }
 
@@ -2487,7 +2490,7 @@ function renderEventosSA() {
     
     bar.style.left = (startIdx * 60) + 'px'; 
     bar.style.top = top + 'px';
-    // Largura mínima de 200px para garantir que o título apareça
+    // Largura mínima de 200px garante o título visível
     bar.style.width = Math.max(200, (durationDays * 60 - 4)) + 'px'; 
     bar.style.position = 'absolute';
     
@@ -2516,6 +2519,7 @@ function renderEventosSA() {
     scrollContainer.style.height = alturaFinal + 'px';
     scrollContainer.style.maxHeight = 'none';
   }
+}
 async function carregarEventosSA(force=false) {
   const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
   if(label)label.textContent='Atualizando lista…';
