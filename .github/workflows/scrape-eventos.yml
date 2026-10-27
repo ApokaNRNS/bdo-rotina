@@ -1,0 +1,36 @@
+name: Atualizar Eventos SA
+
+on:
+  schedule:
+    - cron: '0 10 * * 4' # Toda quinta às 07:00 (horário de Brasília)
+  workflow_dispatch: # Permite rodar manualmente
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências
+        run: |
+          npm install
+          npx playwright install chromium
+
+      - name: Rodar o Scraper
+        run: node scraper.js
+
+      - name: Salvar o JSON atualizado
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/eventos-sa.json
+          git commit -m "🤖 Atualização automática dos eventos SA" || echo "Nenhuma mudança"
+          git push
