@@ -2,8 +2,10 @@ name: Atualizar Eventos SA
 
 on:
   schedule:
-    - cron: '0 10 * * 4' # Toda quinta às 07:00 (horário de Brasília)
-  workflow_dispatch: # Permite rodar manualmente
+    # Roda às 07:00 (10 UTC) e às 10:00 (13 UTC) de Terça a Sábado
+    - cron: '0 10 * * 2-6'
+    - cron: '0 13 * * 2-6'
+  workflow_dispatch:
 
 jobs:
   scrape:
