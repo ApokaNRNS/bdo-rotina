@@ -1,6 +1,6 @@
 {
   "source": "https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3",
-  "updatedAt": "2026-10-27T22:35:32.611Z",
+  "updatedAt": "2026-10-27T22:57:14.063Z",
   "events": [
     {
       "title": "[Semana de Agradecimento] Dia de Black Desert: Compartilhe sua Mensagem de Celebração para o SA!",
@@ -27,7 +27,7 @@
       "permanent": false
     },
     {
-      "title": "NOVO",
+      "title": "[Semana de Agradecimento] Sorteio Especial Gleam para você!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8759&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/21/5d6my49edplpolg120261021231536783.400x225.jpg",
       "status": "andamento",
@@ -35,7 +35,7 @@
       "permanent": false
     },
     {
-      "title": "NOVO",
+      "title": "[Semana de Agradecimento] Evento de Vídeo de Celebração!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8755&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/21/kfqqviqygmquoo6w20261021213139244.400x225.jpg",
       "status": "andamento",
@@ -43,7 +43,7 @@
       "permanent": false
     },
     {
-      "title": "NOVO",
+      "title": "Disponível o Ano Todo! Benefícios Especiais de Evento",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=6489&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/W0CJO31M7OPFROB820260901160712450.400x225.jpg",
       "status": "andamento",
@@ -51,7 +51,7 @@
       "permanent": true
     },
     {
-      "title": "POPULAR",
+      "title": "[EP. 2] Presente para os Mensageiros do Bem 'Silêncio do Bem'",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8725&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/14/7u297eb5q08cdxnv20261014225727029.400x225.jpg",
       "status": "andamento",
@@ -59,7 +59,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "Passe Especial Diário com o Demônio",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8724&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/13/r5cpkl96k8wxzm3i20261013221643635.400x225.png",
       "status": "andamento",
@@ -67,7 +67,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "Encha a Bênção de Pérola!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8723&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/13/vznilirvoma6zwoz20261013221252227.400x225.jpg",
       "status": "andamento",
@@ -75,7 +75,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "[Arena Solare] Vitória Ranqueada Semanal!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8722&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/13/rr25265px61zlt7c20261013215925321.400x225.jpg",
       "status": "andamento",
@@ -83,7 +83,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "[Passe Especial da Solare] Para o Campo de Batalha!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8721&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/13/yjbrep0yabvkfrob20261013215422668.400x225.png",
       "status": "andamento",
@@ -91,7 +91,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "[EP. 1] O Mal se Agita no Parquinho de Marni!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8700&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/07/rdxpkrcoemnnjt4g20261007234804191.400x225.png",
       "status": "andamento",
@@ -99,7 +99,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "[Corcel Lendário] Desperte a Energia Lendária!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8695&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/07/evx80vjw41eciczt20261007183254196.400x225.jpg",
       "status": "andamento",
@@ -107,7 +107,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "[Presente de Dong-Hwa] Recompensas de Acesso Especial",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8666&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/09/29/vjipmmiux9fc3zkx20260929203930179.400x225.png",
       "status": "andamento",
@@ -115,7 +115,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "Recompensas Diárias de Login de Outubro",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8641&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/09/22/tsik9tbau1rkb4t620260922210756007.400x225.jpg",
       "status": "andamento",
@@ -123,7 +123,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "Impulso de Combate da Academia de Olvia",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8498&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/V7KGQ09G7RYMVKOG20260826215737451.400x225.jpg",
       "status": "andamento",
@@ -131,7 +131,7 @@
       "permanent": false
     },
     {
-      "title": "POPULAR",
+      "title": "Passe de Temporada HYPERBOOST",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8356&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/DT7CXOXRJQ92Z7OU20260729231207841.400x225.jpg",
       "status": "andamento",
@@ -139,7 +139,7 @@
       "permanent": true
     },
     {
-      "title": "POPULAR",
+      "title": "Presentes de Boas-vindas para Novatos/Retornando",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8304&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/URVX4J5YZ9A25TBH20260722204138821.400x225.jpg",
       "status": "andamento",
@@ -163,7 +163,7 @@
       "permanent": false
     },
     {
-      "title": "10 Bilhões de Moedas de Prata para Novos Aventureiros!",
+      "title": "10 Bilhões de Moedas de Prata para s Aventureiros!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=6421&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2025/7GSG2Q3LNBOL1Q6W20250702030549098.400x225.jpg",
       "status": "andamento",
