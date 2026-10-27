@@ -2388,7 +2388,7 @@ function renderEventosSA() {
     }
   }
 
-  // 2. Renderizar a Timeline
+    // 2. Renderizar a Timeline
   const timeline = document.getElementById('events-timeline-grid');
   const monthsEl = document.getElementById('timeline-months');
   if(!timeline || !eventosSAItems.length) return;
@@ -2451,17 +2451,24 @@ function renderEventosSA() {
     
     if (ev.permanent) {
       startIdx = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
-      durationDays = Math.min(20, 30 - startIdx); // Limita o tamanho do permanente
+      durationDays = Math.min(20, 30 - startIdx);
     } else {
+      // Correção para não bugar a barra se daysRemaining for nulo ou inválido
+      let dR = Number(ev.daysRemaining);
+      if (isNaN(dR) || dR < 0) dR = 1; 
+
       const start = new Date(today);
-      const isNovo = Number(ev.daysRemaining) >= 9 && ev.title.includes('2026'); 
+      const isNovo = dR >= 9 && String(ev.title).includes('2026'); 
       if (isNovo) start.setDate(start.getDate() - 1);
 
       startIdx = Math.max(0, Math.floor((start - startDate) / (1000 * 60 * 60 * 24)));
-      const end = new Date(today); end.setDate(end.getDate() + Number(ev.daysRemaining));
+      const end = new Date(today); 
+      end.setDate(end.getDate() + dR);
       const endIdx = Math.min(29, Math.floor((end - startDate) / (1000 * 60 * 60 * 24)));
       
       if (end < startDate) return;
+      
+      // Garante que a barra tenha pelo menos 1 dia de largura para o texto aparecer
       durationDays = Math.max(1, endIdx - startIdx + 1);
     }
 
@@ -2470,7 +2477,7 @@ function renderEventosSA() {
     
     let statusClass = '';
     if (ev.permanent) statusClass = 'popular';
-    else if (Number(ev.daysRemaining) >= 9 && ev.title.includes('2026')) statusClass = 'novo';
+    else if (Number(ev.daysRemaining) >= 9 && String(ev.title).includes('2026')) statusClass = 'novo';
 
     const bar = document.createElement('a');
     bar.href = url || '#';
@@ -2480,7 +2487,8 @@ function renderEventosSA() {
     
     bar.style.left = (startIdx * 60) + 'px'; 
     bar.style.top = top + 'px';
-    bar.style.width = (durationDays * 60 - 4) + 'px'; 
+    // Largura mínima de 200px para garantir que o título apareça
+    bar.style.width = Math.max(200, (durationDays * 60 - 4)) + 'px'; 
     bar.style.position = 'absolute';
     
     if (!statusClass) {
@@ -2508,7 +2516,6 @@ function renderEventosSA() {
     scrollContainer.style.height = alturaFinal + 'px';
     scrollContainer.style.maxHeight = 'none';
   }
-}
 async function carregarEventosSA(force=false) {
   const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
   if(label)label.textContent='Atualizando lista…';
