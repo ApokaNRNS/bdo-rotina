@@ -1,13 +1,13 @@
 {
   "source": "https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3",
-  "updatedAt": "2026-10-27T22:26:59.232Z",
+  "updatedAt": "2026-10-27T22:35:32.611Z",
   "events": [
     {
       "title": "[Semana de Agradecimento] Dia de Black Desert: Compartilhe sua Mensagem de Celebração para o SA!",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8760&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/21/mtatqdysrd4q5w5820261021231810795.400x225.jpg",
       "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 5,
       "permanent": false
     },
     {
@@ -15,7 +15,7 @@
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8762&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/22/3sg8c87jommmv5f620261022001402010.400x225.jpg",
       "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 5,
       "permanent": false
     },
     {
@@ -23,23 +23,7 @@
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8750&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/20/6k078g7qyssjt3dh20261020191224075.400x225.jpg",
       "status": "andamento",
-      "daysRemaining": null,
-      "permanent": false
-    },
-    {
-      "title": "NOVO",
-      "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8762&countryType=pt-BR",
-      "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/22/3sg8c87jommmv5f620261022001402010.400x225.jpg",
-      "status": "andamento",
-      "daysRemaining": null,
-      "permanent": false
-    },
-    {
-      "title": "NOVO",
-      "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8760&countryType=pt-BR",
-      "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/21/mtatqdysrd4q5w5820261021231810795.400x225.jpg",
-      "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 9,
       "permanent": false
     },
     {
@@ -60,19 +44,11 @@
     },
     {
       "title": "NOVO",
-      "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8750&countryType=pt-BR",
-      "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/20/6k078g7qyssjt3dh20261020191224075.400x225.jpg",
-      "status": "andamento",
-      "daysRemaining": null,
-      "permanent": false
-    },
-    {
-      "title": "NOVO",
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=6489&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/W0CJO31M7OPFROB820260901160712450.400x225.jpg",
       "status": "andamento",
       "daysRemaining": null,
-      "permanent": false
+      "permanent": true
     },
     {
       "title": "POPULAR",
@@ -119,7 +95,7 @@
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8700&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/10/07/rdxpkrcoemnnjt4g20261007234804191.400x225.png",
       "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 9,
       "permanent": false
     },
     {
@@ -143,7 +119,7 @@
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8641&countryType=pt-BR",
       "image": "https://static.pearlcdn.com/files/portal/bdo_sa/thumbnail/2026/09/22/tsik9tbau1rkb4t620260922210756007.400x225.jpg",
       "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 4,
       "permanent": false
     },
     {
@@ -151,7 +127,7 @@
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=8498&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/V7KGQ09G7RYMVKOG20260826215737451.400x225.jpg",
       "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 16,
       "permanent": false
     },
     {
@@ -160,7 +136,7 @@
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/DT7CXOXRJQ92Z7OU20260729231207841.400x225.jpg",
       "status": "andamento",
       "daysRemaining": null,
-      "permanent": false
+      "permanent": true
     },
     {
       "title": "POPULAR",
@@ -176,7 +152,7 @@
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2025/87NT4R9YH74Q50OG20251217231523503.400x225.jpg",
       "status": "andamento",
       "daysRemaining": null,
-      "permanent": false
+      "permanent": true
     },
     {
       "title": "Aprimore a Arma Principal Soberana! (Última atualização: 27/11/2025 06:00 UTC-3)",
@@ -199,7 +175,7 @@
       "url": "https://www.sa.playblackdesert.com/News/Notice/Detail?groupContentNo=5667&countryType=pt-BR",
       "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2024/QFKJ4P34NOEC9TJV20241224154340830.400x225.jpg",
       "status": "andamento",
-      "daysRemaining": null,
+      "daysRemaining": 0,
       "permanent": false
     },
     {
