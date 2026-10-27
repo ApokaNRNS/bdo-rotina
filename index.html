@@ -3582,6 +3582,7 @@ function init() {
   bindAutoSave();
   prepararSecoesPainel();
   saveState();
+  carregarEventosSA();
 }
 setInterval(() => { atualizarHeader(); renderPainel(); }, 1000);
 setInterval(() => { const v = document.getElementById('view-rotinas'); if (v && v.classList.contains('active')) renderizarRotinas(); }, 30000);
