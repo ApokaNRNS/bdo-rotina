@@ -2302,8 +2302,8 @@ function renderAgendaSemanal() {
       const cells=weekdays.map((_,day)=>{
         const cellEvents=group.filter(ev=>(ev.data.getDay()+6)%7===day&&`${pad(ev.data.getHours())}:${pad(ev.data.getMinutes())}`===time);
         if(!cellEvents.length)return '<td><span class="agenda-empty">—</span></td>';
-        return `<td>${cellEvents.map(ev=>{const done=concluida(ev),next=ev===nextInGroup,color=AGENDA_CORES[ev.categoria]||'#7cc4ff';const names=ev.categoria==='chefes'?ev.titulo.split(/\s*\|\s*/).filter(Boolean):[ev.titulo];return `<div class="agenda-event ${done?'done':''} ${next?'next':''}" style="--agenda-color:${color}" title="${escapeHtml(ev.titulo)}"><div class="agenda-event-main ${ev.categoria==='chefes'?'agenda-boss-names':''}">${names.map(name=>`<span class="agenda-event-title">${escapeHtml(name)}</span>`).join('')}</div></div>`
-      }).join('')}</td>`;
+        return `<td>${cellEvents.map(ev=>{const done=concluida(ev),next=ev===nextInGroup,color=AGENDA_CORES[ev.categoria]||'#7cc4ff';const names=ev.categoria==='chefes'?ev.titulo.split(/\s*\|\s*/).filter(Boolean):[ev.titulo];return `<div class="agenda-event ${done?'done':''} ${next?'next':''}" style="--agenda-color:${color}" title="${escapeHtml(ev.titulo)}"><div class="agenda-event-main ${ev.categoria==='chefes'?'agenda-boss-names':''}">${names.map(name=>`<span class="agenda-event-title">${escapeHtml(name)}</span>`).join('')}</div></div>`}).join('')}</td>`;
+      }).join('');
       return `<tr><td class="agenda-time">${fmtHora(new Date(semana.getFullYear(),semana.getMonth(),semana.getDate(),hour,minute))}</td>${cells}</tr>`;
     }).join('');
     const open=agendaCategoriaAberta(category), nextLabel=nextInGroup?`Próximo ${DIAS_SEMANA[nextInGroup.data.getDay()]} · ${fmtHora(nextInGroup.data)}`:'Semana concluída';
