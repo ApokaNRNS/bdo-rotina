@@ -2,15 +2,15 @@ name: Atualizar Eventos SA
 
 on:
   schedule:
-    # Roda todos os dias às 08:00 da manhã (horário de Brasília)
     - cron: '0 11 * * *'
-  workflow_dispatch: # Permite rodar manualmente clicando em um botão
+  workflow_dispatch:
+
+permissions:
+  contents: write # Dá permissão para o robô salvar arquivos
 
 jobs:
   update-events:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
@@ -25,7 +25,9 @@ jobs:
 
       - name: Salvar as mudanças no repositório
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add data/eventos-sa.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Eventos SA atualizados automaticamente" && git push)
+          # O comando abaixo evita erro se o arquivo não tiver mudado
+          git commit -m "🤖 Eventos SA atualizados automaticamente" || echo "Nada para commitar"
+          git push
