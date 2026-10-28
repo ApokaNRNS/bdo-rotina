@@ -2332,12 +2332,12 @@ async function carregarEventosSA(force=false) {
   const label = document.getElementById('eventos-sa-atualizado');
   const status = document.getElementById('eventos-sa-status');
   
-  // Se o usuário clicou no botão "Atualizar", mostra a mensagem
+  // Se o usuário clicou no botão, mostra "Atualizando..."
   if (force && label) {
     label.textContent = 'Atualizando...';
   }
 
-  // Pega os dados que já estão salvos no HTML (o fallback)
+  // Vai direto no Snapshot que está no seu HTML (sem tentar buscar arquivo)
   const fallback = document.getElementById('eventos-sa-fallback');
   if (fallback) {
     try {
@@ -2347,7 +2347,7 @@ async function carregarEventosSA(force=false) {
       // Renderiza os cards na tela
       renderEventosSA(); 
       
-      // Atualiza o texto no topo com a data de agora
+      // Atualiza o texto no topo
       if (label) {
         label.textContent = `Atualizado ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`;
       }
@@ -2360,7 +2360,7 @@ async function carregarEventosSA(force=false) {
     }
   }
 
-  // Se der erro (o que não vai acontecer, pois os dados estão no HTML):
+  // Só cai aqui se o HTML não tiver o Snapshot (o que não vai acontecer)
   if (label) label.textContent = 'Não foi possível carregar';
   if (status) status.innerHTML = 'Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
 }
