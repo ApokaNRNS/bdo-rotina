@@ -2302,8 +2302,28 @@ function renderAgendaSemanal() {
       const cells=weekdays.map((_,day)=>{
         const cellEvents=group.filter(ev=>(ev.data.getDay()+6)%7===day&&`${pad(ev.data.getHours())}:${pad(ev.data.getMinutes())}`===time);
         if(!cellEvents.length)return '<td><span class="agenda-empty">—</span></td>';
-        return `<td>${cellEvents.map(ev=>{const done=concluida(ev),next=ev===nextInGroup,color=AGENDA_CORES[ev.categoria]||'#7cc4ff';const names=ev.categoria==='chefes'?ev.titulo.split(/\s*\|\s*/).filter(Boolean):[ev.titulo];return `<div class="agenda-event ${done?'done':''} ${next?'next':''}" style="--agenda-color:${color}" title="${escapeHtml(ev.titulo)}"><div class="agenda-event-main ${ev.categoria==='chefes'?'agenda-boss-names':''}">${names.map(name=>`<span class="agenda-event-title">${escapeHtml(name)}</span>`).join('')}</div></div>`}).join('')}</td>`;
-      }).join('');
+          return `<td>${cellEvents.map(ev=>{
+          const done = concluida(ev);
+          const next = ev === nextInGroup;
+          const color = AGENDA_CORES[ev.categoria] || '#7cc4ff';
+          const names = ev.categoria === 'chefes' ? ev.titulo.split(/\s*\|\s*/).filter(Boolean) : [ev.titulo];
+          
+          let innerDiv = `<div class="agenda-event ${done?'done':''} ${next?'next':''}" style="--agenda-color:${color}" title="${escapeHtml(ev.titulo)}"><div class="agenda-event-main ${ev.categoria==='chefes'?'agenda-boss-names':''}">${names.map(name=>`<span class="agenda-event-title">${escapeHtml(name)}</span>`).join('')}</div></div>`;
+
+          // Se for manutenção, busca o link na configuração e envolve a div num <a>
+          if (ev.categoria === 'manutencao') {
+            let link = '#';
+            if (ev.titulo.includes('SA') && state.config.servidores.SA) link = state.config.servidores.SA.link;
+            else if (ev.titulo.includes('Global Labs') && state.config.servidores.GlobalLabs) link = state.config.servidores.GlobalLabs.link;
+            else if (ev.titulo.includes('Korea') && state.config.servidores.Korea) link = state.config.servidores.Korea.link;
+            else if (ev.titulo.includes('SEA') && state.config.servidores.SEA) link = state.config.servidores.SEA.link;
+            else if (ev.titulo.includes('NA/EU') && state.config.servidores.NA_EU) link = state.config.servidores.NA_EU.link;
+
+            return `<a href="${safeHttpUrl(link)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:block;color:inherit;">${innerDiv}</a>`;
+          }
+
+          return innerDiv;
+        }).join('')}</td>`;
       return `<tr><td class="agenda-time">${fmtHora(new Date(semana.getFullYear(),semana.getMonth(),semana.getDate(),hour,minute))}</td>${cells}</tr>`;
     }).join('');
     const open=agendaCategoriaAberta(category), nextLabel=nextInGroup?`Próximo ${DIAS_SEMANA[nextInGroup.data.getDay()]} · ${fmtHora(nextInGroup.data)}`:'Semana concluída';
