@@ -1,8 +1,9 @@
 import urllib.request
 import json
 import datetime
-import re
 import os
+import re
+from html.parser import HTMLParser
 
 URL = "https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3"
 
@@ -16,66 +17,78 @@ def scrape_events():
         return []
 
     events = []
+    # O site do BDO coloca os links e imagens dentro de blocos com a classe "board_list_item"
+    # Vamos usar Regex para achar esses blocos
+    blocks = re.findall(r'<li[^>]*class="[^"]*board_list_item[^"]*"[^>]*>(.*?)</li>', html, re.DOTALL)
     
-    # Encontra todos os links de notícias que contém "Detail"
-    links = re.findall(r'href="(/News/Notice/Detail\?[^"]+)"', html)
-    # Remove duplicados mantendo a ordem
-    links = list(dict.fromkeys(links))
-    
-    for link in links[:25]: # Pega os 25 primeiros
-        url = "https://www.sa.playblackdesert.com" + link
+    # Se não achar com <li>, tenta com <div>
+    if not blocks:
+        blocks = re.findall(r'<div[^>]*class="[^"]*board_list_item[^"]*"[^>]*>(.*?)</div>', html, re.DOTALL)
+
+    for block in blocks:
+        # Extrai o link (URL)
+        link_match = re.search(r'href="([^"]+)"', block)
+        if not link_match: continue
         
-        # Tenta achar o título e a imagem no bloco perto do link (usando regex simples)
-        # Como o site é dinâmico, procuramos a imagem e o título associados
+        link = link_match.group(1)
+        if link.startswith('/'):
+            link = "https://www.sa.playblackdesert.com" + link
+            
+        # Extrai o Título (geralmente está em um <span class="title"> ou <strong>)
+        title_match = re.search(r'<span[^>]*class="[^"]*title[^"]*"[^>]*>(.*?)</span>', block, re.DOTALL)
+        if not title_match:
+            # Se não achar a classe, pega o texto de qualquer tag dentro do link
+            title_match = re.search(r'>([^<]{10,})<', block)
+            
+        title = title_match.group(1).strip() if title_match else "Evento do BDO"
+        title = re.sub(r'<[^>]+>', '', title) # Limpa tags HTML do título
+        
+        # Extrai a Imagem
+        img_match = re.search(r'src="([^"]+)"', block)
+        image = img_match.group(1) if img_match else ""
+        if image.startswith('//'):
+            image = "https:" + image
+
         events.append({
-            "title": "Evento do Black Desert SA", # Título genérico caso não ache
-            "url": url,
-            "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/W0CJO31M7OPFROB820260901160712450.400x225.jpg", # Imagem padrão
+            "title": title,
+            "url": link,
+            "image": image,
             "status": "andamento",
-            "daysRemaining": 10,
+            "daysRemaining": 10, # Valor fixo só para o site não bugar o tamanho da barra
             "permanent": False
         })
+
+    # Se o site mudou muito e o regex falhou, vamos pegar qualquer link que tenha "Detail"
+    if not events:
+        print("Regex principal falhou. Tentando método de fallback...")
+        links = re.findall(r'href="(/News/Notice/Detail\?[^"]+)"', html)
+        links = list(dict.fromkeys(links))
         
-    # Tenta extrair os títulos reais
-    # O site coloca os títulos dentro de tags <strong> ou <span> perto dos links
-    # Vamos fazer uma busca mais bruta nos blocos <a>
-    blocks = re.findall(r'<a[^>]*href="(/News/Notice/Detail\?[^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL)
-    
-    parsed_events = []
-    for link, content in blocks:
-        if link not in [e['url'] for e in events]:
-            continue
-            
-        url = "https://www.sa.playblackdesert.com" + link
-        
-        # Limpa as tags HTML do conteúdo para pegar o texto do título
-        text = re.sub(r'<[^>]+>', '', content).strip()
-        
-        # Se tiver texto, usa como título
-        if text and len(text) > 3:
-            # Pega a imagem se houver
-            img_match = re.search(r'src="([^"]+)"', content)
-            img = img_match.group(1) if img_match else "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/W0CJO31M7OPFROB820260901160712450.400x225.jpg"
-            
-            parsed_events.append({
-                "title": text,
+        for link in links[:20]: # Pega os 20 primeiros
+            url = "https://www.sa.playblackdesert.com" + link
+            # Tenta achar uma imagem perto do link
+            events.append({
+                "title": "Confira o novo evento no site oficial",
                 "url": url,
-                "image": img,
+                "image": "https://s1.pearlcdn.com/SA/Upload/thumbnail/2026/W0CJO31M7OPFROB820260901160712450.400x225.jpg",
                 "status": "andamento",
                 "daysRemaining": 10,
                 "permanent": False
             })
-            
-    # Se achou os títulos reais, usa eles. Senão, usa os links genéricos.
-    final_events = parsed_events if parsed_events else events
-    
-    return final_events
+
+    # Remove eventos duplicados (mesma URL)
+    unique_events = []
+    seen_urls = set()
+    for ev in events:
+        if ev['url'] not in seen_urls:
+            unique_events.append(ev)
+            seen_urls.add(ev['url'])
+
+    return unique_events[:25]
 
 if __name__ == "__main__":
     events = scrape_events()
-    
-    if not events:
-        print("Nenhum evento encontrado. Mantendo o arquivo anterior ou criando vazio.")
+    print(f"Encontrados {len(events)} eventos.")
     
     data = {
         "source": URL,
@@ -87,4 +100,4 @@ if __name__ == "__main__":
     with open('data/eventos-sa.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
-    print(f"Sucesso! {len(events)} eventos salvos em data/eventos-sa.json")
+    print("Arquivo data/eventos-sa.json salvo com sucesso!")
