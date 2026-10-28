@@ -1,4 +1,3 @@
-```html
 <h1 align="center">🗓️ BDO Rotina — by ApokaNRNS</h1>
 
 <p align="center">
@@ -90,5 +89,3 @@ Este projeto é de código aberto e está disponível para a comunidade. Sinta-s
 
 <p align="center">Feito com 💙 para a comunidade de Black Desert SA.</p>
 ```
-
-Com esse código, o botão do LivePix vai ficar **verde, centralizado e com o coraçãozinho**, e os escudos do topo vão aparecer certinhos na tela. Pode colar sem medo!
