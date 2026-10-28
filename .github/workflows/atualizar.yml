@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # Dá permissão para o robô salvar arquivos
+  contents: write
 
 jobs:
   update-events:
@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
+        with:
+          ref: main # Força o checkout na branch main
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -28,6 +30,5 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add data/eventos-sa.json
-          # O comando abaixo evita erro se o arquivo não tiver mudado
           git commit -m "🤖 Eventos SA atualizados automaticamente" || echo "Nada para commitar"
-          git push
+          git push origin main # Força o envio para a branch main
