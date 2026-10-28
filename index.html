@@ -2328,228 +2328,32 @@ function filtrarEventosSA(filter,button) {
   renderEventosSA();
 }
 function buscarEventosSA(value) { eventosSASearch=String(value||'').trim().toLocaleLowerCase('pt-BR'); renderEventosSA(); }
-function renderEventosSA() {
-  // 1. Renderizar os Cards (Filtros)
-  const list = document.getElementById('eventos-sa-lista'); 
-  if(list) {
-    let filtered = eventosSAItems.filter(item => {
-      const isPermanent = item.permanent === true;
-      const isNew = !isPermanent && Number(item.daysRemaining) >= 9 && String(item.title || '').includes('2026');
-      const status = String(item.status || 'andamento');
-
-      let matchFilter = false;
-      if (eventosSAFilter === 'todos') matchFilter = status !== 'encerrado'; 
-      else if (eventosSAFilter === 'encerrado') matchFilter = status === 'encerrado';
-      else if (eventosSAFilter === 'permanente') matchFilter = isPermanent;
-      else if (eventosSAFilter === 'novo') matchFilter = isNew;
-      else matchFilter = status === 'andamento' && !isPermanent && !isNew;
-
-      return matchFilter && (!eventosSASearch || String(item.title || '').toLocaleLowerCase('pt-BR').includes(eventosSASearch));
-    });
-
-    filtered.sort((a, b) => {
-      const getWeight = (item) => {
-        if (item.status === 'encerrado') return 4;
-        if (item.permanent) return 3;
-        const isNew = Number(item.daysRemaining) >= 9 && String(item.title || '').includes('2026');
-        if (isNew) return 1;
-        return 2;
-      };
-      const weightDiff = getWeight(a) - getWeight(b);
-      if (weightDiff !== 0) return weightDiff;
-      const daysA = a.permanent ? 999 : Number(a.daysRemaining);
-      const daysB = b.permanent ? 999 : Number(b.daysRemaining);
-      if (daysA !== daysB) return daysA - daysB;
-      return String(a.title).localeCompare(String(b.title));
-    });
-
-    if(!eventosSAItems.length) { list.innerHTML = '<div class="events-empty">Nenhum dado automático carregado ainda.</div>'; }
-    else if(!filtered.length) { list.innerHTML = '<div class="events-empty">Nenhum evento corresponde a esse filtro.</div>'; }
-    else {
-      list.innerHTML = filtered.map(item => {
-        const url = urlEventoSA(item.url), image = urlEventoSA(item.image, true), ended = item.status === 'encerrado';
-        const isPermanent = item.permanent === true;
-        const isNew = !isPermanent && Number(item.daysRemaining) >= 9 && String(item.title || '').includes('2026');
-        
-        let badgeClass = '';
-        let badgeText = 'Em andamento';
-        if (ended) { badgeClass = 'ended'; badgeText = 'Encerrado'; }
-        else if (isPermanent) { badgeClass = 'tipo-permanente'; badgeText = '⭐ Permanente'; }
-        else if (isNew) { badgeClass = 'tipo-novo'; badgeText = '✨ Novo'; }
-
-        const cardClass = isPermanent ? 'tipo-permanente' : (isNew ? 'tipo-novo' : '');
-        const remaining = item.permanent ? 'Sempre disponível' : Number.isFinite(Number(item.daysRemaining)) ? `${Number(item.daysRemaining)} dias restantes` : '';
-
-        return `<article class="event-sa-card ${cardClass}">${image?`<a href="${escapeHtml(url||'#')}" target="_blank" rel="noopener noreferrer"><img class="event-sa-image" src="${escapeHtml(image)}" alt="" loading="lazy"></a>`:''}<div class="event-sa-body"><div class="event-sa-meta"><span class="event-sa-badge ${badgeClass}">${badgeText}</span><span class="event-sa-remaining">${escapeHtml(remaining)}</span></div><h3 class="event-sa-title">${escapeHtml(item.title||'Evento do Black Desert SA')}</h3>${url?`<a class="event-sa-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Ver anúncio oficial ↗</a>`:''}</div></article>`;
-      }).join('');
-    }
-  }
-
-  // 2. Renderizar a Timeline
-  const timeline = document.getElementById('events-timeline-grid');
-  const monthsEl = document.getElementById('timeline-months');
-  if(!timeline) return;
-
-  if(!eventosSAItems || eventosSAItems.length === 0) {
-    timeline.innerHTML = '<div style="padding:20px;color:#888;">Nenhum evento para exibir na linha do tempo.</div>';
-    if(monthsEl) monthsEl.innerHTML = '';
-    return;
-  }
-
-  // Pega a data de hoje para a linha do tempo bater certinho
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  
-  const startDate = new Date(today); startDate.setDate(startDate.getDate() - 3);
-  const endDate = new Date(today); endDate.setDate(endDate.getDate() + 30);
-  
-  const days = [];
-  let d = new Date(startDate);
-  while (d <= endDate) {
-    days.push(new Date(d));
-    d.setDate(d.getDate() + 1);
-  }
-
-  const uniqueMonths = [...new Set(days.map(day => day.toLocaleString('pt-BR', { month: 'short' }).replace('.', '')))];
-  if (monthsEl) monthsEl.innerHTML = uniqueMonths.map(m => `<span>${m}</span>`).join('');
-
-  let html = '';
-  days.forEach((day, index) => {
-    const isToday = day.getTime() === today.getTime();
-    const dayName = day.toLocaleString('pt-BR', { weekday: 'short' }).replace('.', '').substring(0,2).toUpperCase();
-    const dayNum = day.getDate();
-    
-    html += `<div class="timeline-day-column">
-      <div class="timeline-day-header ${isToday ? 'today' : ''}">
-        <span class="day-name">${dayName}</span>
-        <span class="day-number">${dayNum}</span>
-      </div>
-      <div class="timeline-day-body" id="timeline-body-${index}"></div>
-    </div>`;
-  });
-  timeline.innerHTML = html;
-
-  const nowLine = document.createElement('div');
-  nowLine.className = 'timeline-now-line';
-  const daysFromStart = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
-  nowLine.style.left = (daysFromStart * 60 + 30) + 'px';
-  timeline.appendChild(nowLine);
-
-  let eventCount = 0;
-
-  const sortedEvents = [...eventosSAItems].filter(e => e.status !== 'encerrado').sort((a, b) => {
-    if (a.permanent && !b.permanent) return 1;
-    if (!a.permanent && b.permanent) return -1;
-    if (a.permanent && b.permanent) return String(a.title).localeCompare(String(b.title));
-    const daysA = Number(a.daysRemaining);
-    const daysB = Number(b.daysRemaining);
-    if (daysA !== daysB) return daysA - daysB;
-    return String(a.title).localeCompare(String(b.title));
-  });
-
-  sortedEvents.forEach((ev) => {
-    let startIdx, durationDays;
-    const top = 45 + (eventCount * 42); 
-    
-    if (ev.permanent) {
-      startIdx = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
-      durationDays = Math.min(20, 30 - startIdx);
-    } else {
-      let dR = Number(ev.daysRemaining);
-      if (isNaN(dR) || dR < 0) dR = 1; 
-
-      const start = new Date(today);
-      const isNovo = dR >= 9 && String(ev.title).includes('2026'); 
-      if (isNovo) start.setDate(start.getDate() - 1);
-
-      startIdx = Math.max(0, Math.floor((start - startDate) / (1000 * 60 * 60 * 24)));
-      const end = new Date(today); 
-      end.setDate(end.getDate() + dR);
-      const endIdx = Math.min(29, Math.floor((end - startDate) / (1000 * 60 * 60 * 24)));
-      
-      if (end < startDate) return;
-      
-      durationDays = Math.max(1, endIdx - startIdx + 1);
-    }
-
-    const image = urlEventoSA(ev.image, true);
-    const url = urlEventoSA(ev.url);
-    
-    let statusClass = '';
-    if (ev.permanent) statusClass = 'popular';
-    else if (Number(ev.daysRemaining) >= 9 && String(ev.title).includes('2026')) statusClass = 'novo';
-
-    const bar = document.createElement('a');
-    bar.href = url || '#';
-    bar.target = '_blank';
-    bar.rel = 'noopener noreferrer';
-    bar.className = `timeline-event-bar ${statusClass}`;
-    
-    bar.style.left = (startIdx * 60) + 'px'; 
-    bar.style.top = top + 'px';
-    bar.style.width = Math.max(200, (durationDays * 60 - 4)) + 'px'; // Trava de segurança para não encolher
-    bar.style.position = 'absolute';
-    
-    if (!statusClass) {
-      const hue = (eventCount * 137.5) % 360;
-      bar.style.borderLeft = `4px solid hsl(${hue}, 70%, 60%)`;
-    }
-
-    const tempoTexto = ev.permanent ? '∞' : `${ev.daysRemaining}d`;
-    bar.innerHTML = `
-      ${image ? `<img src="${image}" class="event-img" alt="">` : ''}
-      <span class="event-title">${escapeHtml(ev.title)}</span>
-      <span class="event-time">${tempoTexto}</span>
-    `;
-    
-    timeline.appendChild(bar);
-    eventCount++;
-  });
-
-  const alturaFinal = Math.max(150, 45 + (eventCount * 42) + 20); 
-  timeline.querySelectorAll('.timeline-day-body').forEach(el => el.style.height = alturaFinal + 'px');
-  timeline.style.height = alturaFinal + 'px';
-
-  const scrollContainer = document.getElementById('events-timeline-scroll');
-  if (scrollContainer) {
-    scrollContainer.style.height = alturaFinal + 'px';
-    scrollContainer.style.maxHeight = 'none';
-  }
-}
-
 async function carregarEventosSA(force=false) {
   const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
-  if(label)label.textContent='Atualizando lista…';
-  try {
-    const response=await fetch(`data/eventos-sa.json${force?'?atualizar='+Date.now():''}`,{cache:force?'no-store':'default'});
-    if(!response.ok)throw new Error('Feed ainda não publicado');
-    const data=await response.json(); 
-    eventosSAItems=Array.isArray(data.events)?data.events:[];
-    
-    // Trava de segurança: Se o JSON vier vazio, não limpa a tela!
-    if (eventosSAItems.length === 0) {
-      throw new Error('Lista vazia');
-    }
+  if(label)label.textContent='Carregando publicações…';
 
-    if(label){const date=data.updatedAt?new Date(data.updatedAt):null;label.textContent=date&&!isNaN(date)?`Atualizado ${date.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`:'Lista oficial';}
-    if(status)status.textContent=`${eventosSAItems.filter(x=>x.status==='andamento').length} em andamento · ${eventosSAItems.filter(x=>x.status==='encerrado').length} encerrados`;
-    renderEventosSA();
-  } catch (_) {
-    const fallback=document.getElementById('eventos-sa-fallback');
-    if(fallback){
-      try{
-        const snapshot=JSON.parse(fallback.textContent); eventosSAItems=Array.isArray(snapshot.events)?snapshot.events:[];
-        if(label){ 
-           label.textContent = `Snapshot ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`; 
-        }
-        if(status)status.textContent='Arquivo local: mostrando a última cópia incluída. Abra o site publicado para receber atualizações automáticas.';
-        renderEventosSA(); return;
-      }catch(__){}
+  // O site vai direto para o Snapshot que já está no seu HTML.
+  // Assim, a tela NUNCA fica vazia, independente do robô do GitHub.
+  const fallback=document.getElementById('eventos-sa-fallback');
+  if(fallback){
+    try{
+      const snapshot=JSON.parse(fallback.textContent); 
+      eventosSAItems=Array.isArray(snapshot.events)?snapshot.events:[];
+      
+      if(label) label.textContent = `Atualizado ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`;
+      if(status) status.textContent = 'Mostrando dados locais (snapshot). O robô do BDO está bloqueado pelo site oficial.';
+      
+      renderEventosSA(); 
+      return;
+    }catch(__){
+      console.error("Erro ao ler o fallback", __);
     }
-    if(label)label.textContent='Não foi possível atualizar';
-    if(status)status.innerHTML='A atualização funciona no site publicado. Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
-    renderEventosSA();
   }
+
+  // Se por algum motivo o HTML não tiver o fallback, mostra erro.
+  if(label) label.textContent='Não foi possível carregar';
+  if(status) status.innerHTML='Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
+  renderEventosSA();
 }
 
 function renderRegistros(agora) {
