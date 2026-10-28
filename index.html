@@ -2523,7 +2523,14 @@ async function carregarEventosSA(force=false) {
   try {
     const response=await fetch(`data/eventos-sa.json${force?'?atualizar='+Date.now():''}`,{cache:force?'no-store':'default'});
     if(!response.ok)throw new Error('Feed ainda não publicado');
-    const data=await response.json(); eventosSAItems=Array.isArray(data.events)?data.events:[];
+    const data=await response.json(); 
+    eventosSAItems=Array.isArray(data.events)?data.events:[];
+    
+    // Trava de segurança: Se o JSON vier vazio, não limpa a tela!
+    if (eventosSAItems.length === 0) {
+      throw new Error('Lista vazia');
+    }
+
     if(label){const date=data.updatedAt?new Date(data.updatedAt):null;label.textContent=date&&!isNaN(date)?`Atualizado ${date.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`:'Lista oficial';}
     if(status)status.textContent=`${eventosSAItems.filter(x=>x.status==='andamento').length} em andamento · ${eventosSAItems.filter(x=>x.status==='encerrado').length} encerrados`;
     renderEventosSA();
@@ -2532,7 +2539,6 @@ async function carregarEventosSA(force=false) {
     if(fallback){
       try{
         const snapshot=JSON.parse(fallback.textContent); eventosSAItems=Array.isArray(snapshot.events)?snapshot.events:[];
-        // AQUI ESTÁ O SEGREDO: Força a data do snapshot a ser a data atual (agora)
         if(label){ 
            label.textContent = `Snapshot ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`; 
         }
@@ -2544,80 +2550,6 @@ async function carregarEventosSA(force=false) {
     if(status)status.innerHTML='A atualização funciona no site publicado. Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
     renderEventosSA();
   }
-}
-// Rotinas
-function getRotinaStatus(key, agora) {
-  const cfg = state.config.resets;
-  let prox;
-  if (key === 'diario') prox = proximaOcorrenciaComDur(cfg.diario.dia, cfg.diario.hora, 0, agora);
-  else if (key === 'quinta') prox = proximaOcorrenciaComDur(cfg.quinta.dia, cfg.quinta.hora, 0, agora);
-  else if (key === 'domingo') prox = proximaOcorrenciaComDur(cfg.domingo.dia, cfg.domingo.hora, 0, agora);
-  else return null;
-  if (!prox) return null;
-  const diffMin = (prox.inicio - agora) / 60000;
-  return { diffMin, perto: diffMin <= 180 && diffMin > 60, urgente: diffMin <= 60 };
-}
-
-function renderizarRotinas() {
-  const container = document.getElementById('rotinas-container');
-  const agora = new Date();
-  const blocos = [
-    {key:'diario',titulo:'📆 Missões Diárias',cor:'var(--accent)', vis:'resetDiario'},
-    {key:'quinta',titulo:'📅 Missões Semanais Quinta',cor:'var(--success)', vis:'quinta'},
-    {key:'domingo',titulo:'📅 Missões Semanais Domingo',cor:'var(--gold)', vis:'domingo'}
-  ];
-  
-  let totalGeral = 0, feitasGeral = 0;
-  ['diario', 'quinta', 'domingo'].forEach(k => {
-    const acts = state.rotinas[k] || [];
-    totalGeral += acts.length;
-    feitasGeral += acts.filter(a => a.done).length;
-  });
-  const pctGeral = totalGeral ? Math.round(100*feitasGeral/totalGeral) : 0;
-  document.getElementById('geral-stats').innerHTML = `${feitasGeral} concluídas · ${totalGeral - feitasGeral} restantes`;
-  document.getElementById('geral-pct').innerHTML = `<strong>${pctGeral}%</strong>`;
-  document.getElementById('geral-bar').style.width = pctGeral + '%';
-  document.getElementById('geral-bar').className = 'progress-bar ' + (pctGeral === 100 ? 'success' : '');
-  document.getElementById('geral-badge').innerHTML = pctGeral === 100 ? '<span class="rotina-badge success">✓ Tudo Concluído</span>' : '';
-  document.getElementById('rotina-geral-block').className = 'rotina-block ' + (pctGeral === 100 ? 'completed' : '');
-
-  container.innerHTML = blocos.map(b => {
-    const atividades = state.rotinas[b.key] || [];
-    const feitas = atividades.filter(a => a.done).length;
-    const total = atividades.length;
-    const pct = total ? Math.round(100*feitas/total) : 0;
-    const editando = editMode[b.key];
-    const status = getRotinaStatus(b.key, agora);
-    const isDisabled = state.visible[b.vis] === false;
-    
-    let blockClass = '';
-    if (isDisabled) blockClass = 'disabled';
-    else if (total > 0 && feitas === total) blockClass = 'completed';
-    
-    let badge = '', badgeClass = 'dim';
-    if (isDisabled) { badge = 'Desativado'; badgeClass = 'dim'; }
-    else if (total > 0 && feitas === total) { badge = '✓ Concluído'; badgeClass = 'success'; }
-    else if (status && status.urgente) { badge = '⏰ '+Math.round(status.diffMin)+'min'; badgeClass = 'danger'; }
-    else if (status && status.perto) { badge = '🔄 '+Math.round(status.diffMin/60)+'h'; badgeClass = 'warning'; }
-    else badge = `${feitas}/${total}`;
-
-    const barClass = (total>0 && feitas===total)?'success':(status&&status.urgente)?'danger':(status&&status.perto)?'warning':'';
-    return `<div class="rotina-block ${blockClass}" data-block="${b.key}">
-      <div class="rotina-header">
-        <div class="rotina-title-group"><h3 style="color:${b.cor}">${b.titulo}</h3><span class="rotina-badge ${badgeClass}">${badge}</span></div>
-        <div class="rotina-actions">
-          <button class="btn small" onclick="toggleEdit('${b.key}')">${editando?'✅ Pronto':'✏️ Editar'}</button>
-          <button class="btn small" onclick="resetBloco('${b.key}')" title="Desmarcar todas as atividades" aria-label="Desmarcar todas as atividades de ${b.titulo}">🔄</button>
-          ${editando?`<button class="btn small primary" onclick="novaAtividade('${b.key}')">➕</button>`:''}
-        </div>
-      </div>
-      <div class="rotina-stats"><span>${feitas} concluídas · ${total - feitas} restantes</span><span><strong>${pct}%</strong></span></div>
-      <div class="progress"><div class="progress-bar ${barClass}" style="width:${pct}%"></div></div>
-      ${atividades.length===0?'<div class="empty">Nenhuma atividade.</div>':atividades.map((a,i)=>renderAtividade(b.key,a,i,editando)).join('')}
-    </div>`;
-  }).join('');
-  
-  renderRegistros(agora);
 }
 
 function renderRegistros(agora) {
