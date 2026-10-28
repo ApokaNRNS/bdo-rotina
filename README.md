@@ -88,4 +88,3 @@ Este site é feito de fã para fã e é totalmente gratuito! Se ele te ajuda no 
 Este projeto é de código aberto e está disponível para a comunidade. Sinta-se livre para estudar o código, adaptar para o seu uso pessoal ou sugerir melhorias através de *Issues* e *Pull Requests*.
 
 <p align="center">Feito com 💙 para a comunidade de Black Desert SA.</p>
-```
