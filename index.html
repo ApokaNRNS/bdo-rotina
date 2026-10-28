@@ -2163,7 +2163,7 @@ function renderPainel() {
     } 
     else if (isAtualizadoHoje) {
       const dataAtu = ultimoAtu ? `${pad(ultimoAtu.inicio.getDate())}/${pad(ultimoAtu.inicio.getMonth()+1)} às ${fmtHora(ultimoAtu.inicio)}` : '';
-      targetGrid.insertAdjacentHTML('beforeend', `<div class="card state-active ${muted?'muted':''}" data-state="updated"><div class="card-header"><div class="card-title"><span class="card-icon">🛠️</span>${exibir}</div><span class="card-badge active">Atualizado</span></div><div class="card-sub" style="margin-top:6px;"><a href="${safeHttpUrl(s.link)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 12px;background:var(--accent);color:#000;border-radius:6px;font-weight:700;text-decoration:none;">📰 Ver atualização</a></div><div class="card-updated-info">✅ Atualizado · ${dataAtu}</div></div>`);
+      targetGrid.insertAdjacentHTML('beforeend', `<a href="${safeHttpUrl(s.link)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;display:block;"><div class="card state-active ${muted?'muted':''}" data-state="updated"><div class="card-header"><div class="card-title"><span class="card-icon">🛠️</span>${exibir}</div><span class="card-badge active">Atualizado</span></div><div class="card-sub" style="margin-top:6px;"><span style="display:inline-block;padding:8px 12px;background:var(--accent);color:#000;border-radius:6px;font-weight:700;text-decoration:none;">📰 Ver atualização</span></div><div class="card-updated-info">✅ Atualizado · ${dataAtu}</div></div></a>`);
     } 
     else {
       const diffMin = (inicioManutencao - agora) / 60000;
@@ -2272,7 +2272,7 @@ function renderAgendaSemanal() {
   const cycle=Math.max(2,Number(dnCfg.ciclo)||240),nightDuration=Math.max(1,Math.min(cycle-1,Number(dnCfg.noiteDur)||40));
   const useDayNight=state.visible.diaNoite!==false;
   const isNightMinute=minute=>{if(!useDayNight)return false;const phase=((minute-nightRef)%cycle+cycle)%cycle;return phase<nightDuration;};
-  const categoryNames={chefes:'Chefes Mundiais',dianoite:'Dia e Noite',resets:'Resets',guilda:'Chefes de Guilda',arena:'Arena Solare',guerras:'Guerra de Base e Conquista',edana:'Trono de Edana',rosas:'Guerra das Rosas',manutencao:'Manutenção',cooldown:'Vara de Boia Tripla e Rachadura da Escuridão'};
+  const categoryNames={chefes:'Chefes Mundiais',dianoite:'Dia e Noite',resets:'Resets',guilda:'Chefes de Guilda',arena:'Arena Solare',guerras:'Guerra de Base e Conquista',edana:'Trono de Edana',rosas:'Guerra das Rosas',manutencao:'Manutenção e Atualização',cooldown:'Vara de Boia Tripla e Rachadura da Escuridão'};
   const categoryOrder=Object.keys(categoryNames),sections=[];
   if(!eventos.length&&!useDayNight){target.innerHTML='<div class="card agenda-empty">Nenhum evento programado para esta semana. Ative categorias e eventos nas Configurações.</div>';return;}
   categoryOrder.forEach(category=>{
