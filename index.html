@@ -2545,31 +2545,6 @@ async function carregarEventosSA(force=false) {
     renderEventosSA();
   }
 }
-async function carregarEventosSA(force=false) {
-  const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
-  if(label)label.textContent='Atualizando lista…';
-  try {
-    const response=await fetch(`data/eventos-sa.json${force?'?atualizar='+Date.now():''}`,{cache:force?'no-store':'default'});
-    if(!response.ok)throw new Error('Feed ainda não publicado');
-    const data=await response.json(); eventosSAItems=Array.isArray(data.events)?data.events:[];
-    if(label){const date=data.updatedAt?new Date(data.updatedAt):null;label.textContent=date&&!isNaN(date)?`Atualizado ${date.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`:'Lista oficial';}
-    if(status)status.textContent=`${eventosSAItems.filter(x=>x.status==='andamento').length} em andamento · ${eventosSAItems.filter(x=>x.status==='encerrado').length} encerrados`;
-    renderEventosSA();
-  } catch (_) {
-    const fallback=document.getElementById('eventos-sa-fallback');
-    if(fallback){
-      try{
-        const snapshot=JSON.parse(fallback.textContent); eventosSAItems=Array.isArray(snapshot.events)?snapshot.events:[];
-        if(label){const date=snapshot.updatedAt?new Date(snapshot.updatedAt):null;label.textContent=date&&!isNaN(date)?`Snapshot ${date.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`:'Snapshot incluído';}
-        if(status)status.textContent='Arquivo local: mostrando a última cópia incluída. Abra o site publicado para receber atualizações automáticas.';
-        renderEventosSA(); return;
-      }catch(__){}
-    }
-    if(label)label.textContent='Não foi possível atualizar';
-    if(status)status.innerHTML='A atualização funciona no site publicado. Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
-    renderEventosSA();
-  }
-}
 // Rotinas
 function getRotinaStatus(key, agora) {
   const cfg = state.config.resets;
