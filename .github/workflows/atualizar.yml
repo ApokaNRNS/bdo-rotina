@@ -1,0 +1,31 @@
+name: Atualizar Eventos SA
+
+on:
+  schedule:
+    # Roda todos os dias às 08:00 da manhã (horário de Brasília)
+    - cron: '0 11 * * *'
+  workflow_dispatch: # Permite rodar manualmente clicando em um botão
+
+jobs:
+  update-events:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Rodar o Scraper
+        run: python scraper.py
+
+      - name: Salvar as mudanças no repositório
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/eventos-sa.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Eventos SA atualizados automaticamente" && git push)
