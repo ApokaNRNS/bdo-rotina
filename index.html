@@ -2329,31 +2329,40 @@ function filtrarEventosSA(filter,button) {
 }
 function buscarEventosSA(value) { eventosSASearch=String(value||'').trim().toLocaleLowerCase('pt-BR'); renderEventosSA(); }
 async function carregarEventosSA(force=false) {
-  const label=document.getElementById('eventos-sa-atualizado'),status=document.getElementById('eventos-sa-status');
-  if(label)label.textContent='Carregando publicações…';
+  const label = document.getElementById('eventos-sa-atualizado');
+  const status = document.getElementById('eventos-sa-status');
+  
+  // Se o usuário clicou no botão "Atualizar", mostra a mensagem
+  if (force && label) {
+    label.textContent = 'Atualizando...';
+  }
 
-  // O site vai direto para o Snapshot que já está no seu HTML.
-  // Assim, a tela NUNCA fica vazia, independente do robô do GitHub.
-  const fallback=document.getElementById('eventos-sa-fallback');
-  if(fallback){
-    try{
-      const snapshot=JSON.parse(fallback.textContent); 
-      eventosSAItems=Array.isArray(snapshot.events)?snapshot.events:[];
+  // Pega os dados que já estão salvos no HTML (o fallback)
+  const fallback = document.getElementById('eventos-sa-fallback');
+  if (fallback) {
+    try {
+      const snapshot = JSON.parse(fallback.textContent); 
+      eventosSAItems = Array.isArray(snapshot.events) ? snapshot.events : [];
       
-      if(label) label.textContent = `Atualizado ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`;
-      if(status) status.textContent = 'Mostrando dados locais (snapshot). O robô do BDO está bloqueado pelo site oficial.';
-      
+      // Renderiza os cards na tela
       renderEventosSA(); 
+      
+      // Atualiza o texto no topo com a data de agora
+      if (label) {
+        label.textContent = `Atualizado ${new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`;
+      }
+      if (status) {
+        status.textContent = 'Eventos carregados com sucesso.';
+      }
       return;
-    }catch(__){
-      console.error("Erro ao ler o fallback", __);
+    } catch(__) {
+      console.error("Erro ao ler o snapshot", __);
     }
   }
 
-  // Se por algum motivo o HTML não tiver o fallback, mostra erro.
-  if(label) label.textContent='Não foi possível carregar';
-  if(status) status.innerHTML='Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
-  renderEventosSA();
+  // Se der erro (o que não vai acontecer, pois os dados estão no HTML):
+  if (label) label.textContent = 'Não foi possível carregar';
+  if (status) status.innerHTML = 'Verifique sua conexão ou <a href="https://www.sa.playblackdesert.com/pt-BR/News/Notice?boardType=3" target="_blank" rel="noopener noreferrer">consulte os avisos oficiais</a>.';
 }
 
 function renderRegistros(agora) {
